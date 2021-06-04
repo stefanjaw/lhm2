@@ -3,9 +3,9 @@
 # from odoo import models, fields, api
 
 
-# class filter_uoms(models.Model):
-#     _name = 'filter_uoms.filter_uoms'
-#     _description = 'filter_uoms.filter_uoms'
+# class product_uoms(models.Model):
+#     _name = 'product_uoms.product_uoms'
+#     _description = 'product_uoms.product_uoms'
 
 #     name = fields.Char()
 #     value = fields.Integer()
