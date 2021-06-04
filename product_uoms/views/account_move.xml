@@ -1,0 +1,19 @@
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="product_uoms.account_move_line_uoms_field999">
+      <field name="name">account_move_line_uomsfield</field>
+      <field name="model">account.move</field>
+      <field name="inherit_id" ref="account.move.form" />
+      <field name="arch" type="xml">
+        <form>
+            <xpath expr="//notebook/page/field/tree/field[@name='product_uom_id']" position="replace">
+                <field name="product_uom_id" string="UoM" groups="uom.group_uom" optional="show" domain="[( 'id','in', product_uoms )]"/>  
+                <field name="product_uoms" string="UoMS" invisible="1"/>
+            </xpath>
+        </form>
+      </field>
+    </record>
+      
+  </data>
+</odoo>
