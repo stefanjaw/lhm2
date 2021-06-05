@@ -5,32 +5,31 @@
     <record model="ir.ui.view" id="product_uoms.product_template_tree_uoms_empty999">
       <field name="name">product_template_uoms_tree</field>
       <field name="model">product.template</field>
+      <field name="type">tree</field>
+      <field name="priority">98</field>
       <field name="inherit_id" ref="product.product_template_tree_view" />
       <field name="arch" type="xml">
-        <tree>
             <xpath expr="//field[@name='uom_id']" position="after">
               <field name="product_uoms" widget="many2many_tags" string="Available UOMs"/>
-              <field name="uoms_empty" />
+              <field name="uoms_empty" invisible="1"/>
             </xpath>
-        </tree>
       </field>
     </record>
 
     <record model="ir.ui.view" id="product_uoms.product_template_uoms_field999">
       <field name="name">product_template_uoms_field</field>
       <field name="model">product.template</field>
-      <field name="inherit_id" ref="product.template.common.form" />
+      <field name="priority">98</field>
+      <field name="inherit_id" ref="product.product_template_form_view" />
       <field name="arch" type="xml">
-        <form>
             <xpath expr="//field[@name='uom_po_id']" position="after">
                 <field name="product_uoms" string="Available UoMs" help="Select the Available Unit of Measures for this product" widget="many2many_tags" domain="[( 'category_id' , '=', uom_category_id )]"/>
                 <field name="uom_category_id" invisible="1"/>
             </xpath>
-        </form>
       </field>
     </record>
 
-      
+    
       
   </data>
 </odoo>

@@ -5,14 +5,22 @@
     <record model="ir.ui.view" id="product_uoms.sale_order_line_uoms_field999">
       <field name="name">sale_order_line_uoms_field</field>
       <field name="model">sale.order</field>
-      <field name="inherit_id" ref="sale.order.form" />
+      <field name="type">form</field>
+      <field name="priority">98</field>
+      <field name="inherit_id" ref="sale.view_order_form" />
       <field name="arch" type="xml">
-        <form>
-            <xpath expr="//tree/field[@name='product_uom']" position="replace">
-                <field name="product_uom" force_save="1" string="UoM" attrs="{'readonly': [('product_uom_readonly', '=', True)],                     'required': [('display_type', '=', False)],}" context="{'company_id': parent.company_id}" groups="uom.group_uom" options="{&quot;no_open&quot;: True}" optional="show" domain="[( 'id','in', product_uoms )]"/>
+        <xpath expr="//tree/field[@name='product_uom']" position="replace">
+                <field name="product_uom" force_save="1" string="UoM"
+                    attrs="{
+                        'readonly': [('product_uom_readonly', '=', True)],
+                        'required': [('display_type', '=', False)],}"
+                    context="{'company_id': parent.company_id}"
+                    groups="uom.group_uom"
+                    options="{&quot;no_open&quot;: True}"
+                    optional="show"
+                    domain="[( 'id','in', product_uoms )]" />
                 <field name="product_uoms" string="UoMS" invisible="1"/>
             </xpath>
-        </form>
       </field>
     </record>
       
