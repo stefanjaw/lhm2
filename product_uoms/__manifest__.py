@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "product_uoms",
+    'name': "Product Available UOMs",
 
     'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+        This module let the user to enable the possible UOMs
+        that will be selectable when generating a sales or Invoice """,
 
     'description': """
-        Long description of module's purpose
+        This module let the user to enable the possible UOMs
+        that will be selectable when generating a sales or Invoice 
     """,
 
-    'author': "My Company",
-    'website': "http://www.yourcompany.com",
+    'author': "Avalantec",
+    'website': "http://www.avalantec.com",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
