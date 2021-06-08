@@ -49,28 +49,34 @@ class SaleOrder(models.Model):
             'request_owner_id': owner_id,
             'name': request_title,
             'category_id': approval_category_id.id,
-            #'request_status': 'pending',
-            'reference': self.name,
-
+            'reference': model_id.name + ": " +self.name,
             'amount': amount,
-            
         })
-        _logger.info("=====DEB133: RESULT %s", result )
+        _logger.info("=====DEB55: RESULT %s", result )
         
         if result:
             update_approver_ids = result._onchange_category_id()
+            confirmation1 = result.action_confirm()
+            '''
             result.write({
                 'request_status' : 'pending',
             })
+            '''
+            _logger.info("====DEB65 REQUEST STATUS: %s", result.request_status)
+            #result44 = result._compute_request_status()
+            #_logger.info("====DEB64 Result 44: %s", result44)
+        '''
+        return  #SE DEBE QUITAR!!!
+        _logger.info("========DEB65 ")
+        approvers11 = result.mapped('approver_ids').filtered(lambda approver: approver.status == 'new')
+        _logger.info("=====DEB67: RESULT %s", approvers11 )
+        result22 = approvers11._create_activity()
+        _logger.info("=====DEB69: RESULT %s", result22 )
         
-        # @api.onchange('category_id', 'request_owner_id')
-        # def _onchange_category_id(self):
-        
-        _logger.info("=====DEB141: RESULT %s", update_approver_ids )
         _logger.info("=====DEB142: Approver IDS %s", result.approver_ids )
-
-        #body = "XXXX1647"
-        body = "<a href='#' data-oe-model='{}' data-oe-id='{}'> Document Requesting Approval {}: {}</a>".format('sale.order', self.id, self.model_id.name , self.name)
+        '''
+        
+        body = "<a href='#' data-oe-model='{}' data-oe-id='{}'> Document Requesting Approval {}: {}</a>".format('sale.order', self.id, model_id.name , self.name)
         
         chatter_data = {
             'author_id': self.env.user.id,
@@ -79,10 +85,14 @@ class SaleOrder(models.Model):
             'body': body,
         }
         _logger.info("====DEB80 Chatter DATA: %s\n", chatter_data)
-        STOP81
         chatter = self.env['mail.message']
-        result = chatter.sudo().create( chatter_data )
-        _logger.info("=====DEB80 RESULT: %s", result)
+        result33 = chatter.sudo().create( chatter_data )
+        _logger.info("=====DEB80 RESULT: %s", result33)
+        
+        self.write({
+            'approval_request' : result.id,
+        })
+        
         return
     
     def get_current_model(self):
@@ -101,7 +111,7 @@ class SaleOrder(models.Model):
         
         return result
         
-    def log_in_chatter(self,body, model_id_name):
+    def log_to_chatter(self,body, model_id_name):
         _logger.info("====DEB95 SELF ID: %s", self.id)
         
         chatter = self.env['mail.message']
