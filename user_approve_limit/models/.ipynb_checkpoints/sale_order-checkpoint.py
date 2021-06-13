@@ -9,14 +9,13 @@ _logger = logging.getLogger(__name__)
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
     
-    approve_limit_user = fields.Float(compute="record_info")
+    approve_limit_user = fields.Float("User Approve Limit", compute="_compute_limit_user",)
     approve_limit_diff = fields.Float(compute="check_approve_limit")
     approval_request = fields.Many2one('approval.request', "Approval Request")
+    approval_request_status = fields.Selection(related="approval_request.request_status")
     
-    def record_info(self):
-        _logger.info("===DEB18 User ID: %s", self.env.user.approve_limit_sales )
-        _logger.info("===DEB19 User ID: %s", self.env.user.name )
-        
+    def _compute_limit_user(self):
+        _logger.info("compute_limit_user")
         self.approve_limit_user = self.env.user.approve_limit_sales
         return self
     
@@ -33,6 +32,7 @@ class SaleOrder(models.Model):
         return
     
     def request_approval(self):
+        _logger.info("Request Approval")
         model_id= self.get_current_model()
         _logger.info("=====DEB39: MODEL ID NAME %s", model_id.name )
         
@@ -96,11 +96,13 @@ class SaleOrder(models.Model):
         return
     
     def get_current_model(self):
+        _logger.info("Get Current Model")
         ir_model_txt = self.sudo().env.context.get('params').get('model')
         ir_model = self.env[ 'ir.model' ].search([ ('model','=', ir_model_txt) ])
         return ir_model
     
     def add_category_approval(self, model_id_name):
+        _logger.info("Add Category Approval")
         approval_category_model = self.env['approval.category']
         
         result = approval_category_model.sudo().create({
@@ -112,6 +114,7 @@ class SaleOrder(models.Model):
         return result
         
     def log_to_chatter(self,body, model_id_name):
+        _logger.info("Log To Chatter")
         _logger.info("====DEB95 SELF ID: %s", self.id)
         
         chatter = self.env['mail.message']
