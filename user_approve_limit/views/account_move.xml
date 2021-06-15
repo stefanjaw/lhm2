@@ -1,0 +1,106 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+
+    <record model="ir.ui.view" id="account_move_user_approve_limit">
+      <field name="name">account.move.user_approve_limit_form</field>
+      <field name="model">account.move</field>
+      <field name="priority">98</field>
+      <field name="inherit_id" ref="account.view_move_form"/>
+      <field name="arch" type="xml">
+
+        <xpath expr="//button[@name='action_post'][1]" position="before">
+          <button name="request_approval" type="object" string="Request Approval" class="btn-primary" attrs="{'invisible':[
+            '|', '|', ('approve_limit_diff', '&gt;', '0.00'), ('state', '!=', 'draft'), ('approval_request_status', '!=', False)
+          ]}" 
+          context="{'approval_category': 'Invoice', 'model_name':'account.move'}"
+          />
+        </xpath>
+
+        <xpath expr="//button[@name='action_post'][2]" position="attributes">
+          <attribute name="attrs">{'invisible':[
+            '|',
+              '|',
+                ('state', '!=', 'draft'),
+                ('auto_post', '=', True),
+              '|',
+                '&amp;',
+                  ('approve_limit_diff', '&lt;', '0.00'),
+                  ('approval_request_status', '!=', 'approved'),
+              ('move_type', '=', 'entry')
+
+
+          ]}</attribute>
+        </xpath>
+
+        <xpath expr="//button[@name='preview_invoice']" position="attributes">
+          <attribute name="attrs">{'invisible':[
+            '|',
+              ('move_type', 'not in', ('out_invoice', 'out_refund') ),
+              '&amp;',
+                ('approve_limit_diff', '&lt;', '0.00'),
+                ('approval_request_status', '!=', 'approved'),
+          ]}</attribute>
+        </xpath>
+
+        <xpath expr="//group[@id='header_left_group']" position="before">
+          <group name="approval_request_group" attrs="{'invisible':[('approval_request','=', False)]}">
+              <field name="approve_limit_diff" invisible="1"/>
+              <field name="approval_request" groups="sales_team.group_sale_manager"/>
+              <field name="approval_request" groups="!sales_team.group_sale_manager" readonly="0"/>
+              <field name="approval_request_status" />
+          </group>
+        </xpath>
+  
+        <xpath expr="//form" position="inside">
+          <script>
+            $(document).ready( async () => {
+                async function f1(seconds) {
+                  let promise = new Promise(
+                     (resolve, reject) => {
+                        setTimeout(
+                           () => resolve(true),
+                           seconds
+                        );
+                     }
+                  )
+
+                  return promise
+                }
+
+                if ( self.odoo.session_info.is_admin ){
+                    return
+                }
+
+                async function hide_elements(){
+                  await f1(100);
+
+                  approval_request_status = document.getElementsByName("approval_request_status")[0].attributes['raw-value'].value
+
+                  request_approval_visible = document.getElementsByName("request_approval")[0].offsetParent;
+                  if ( request_approval_visible != null &amp;&amp; approval_request_status != "approved") {
+                    try{
+                      document.getElementsByClassName("o_cp_action_menus")[0].hidden = true;
+                    }catch(err){}
+                  }
+
+                  if ( approval_request_status != "false" &amp;&amp; approval_request_status != "approved") {
+                    try{
+                      document.getElementsByClassName("o_cp_action_menus")[0].hidden = true;
+                    }catch(err){}
+                  }
+
+                }
+
+                await hide_elements();
+
+            })
+
+          </script>
+
+        </xpath>
+
+      </field>
+    </record>   
+  </data>
+</odoo>
