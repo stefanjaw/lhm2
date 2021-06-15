@@ -7,8 +7,8 @@ from .user_approve_limit import user_approve_limit
 import logging
 _logger = logging.getLogger(__name__)
 
-class SaleOrder(models.Model):
-    _inherit = 'sale.order'
+class AccountMove(models.Model):
+    _inherit = 'account.move'
     
     approve_limit_user = fields.Float("User Approve Limit",compute="_compute_limit_user",)
     approve_limit_diff = fields.Float(compute="check_approve_limit")
@@ -17,14 +17,23 @@ class SaleOrder(models.Model):
 
     @api.onchange('approve_limit_user')
     def _compute_limit_user(self):
-        _logger.info("20=======APPROVE LIMIT USER: %s",  self.approve_limit_user )
         self.approve_limit_user = user_approve_limit.get_user_limit(self)
+        _logger.info("21==INV=====APPROVE LIMIT USER: %s",  self.approve_limit_user )
         return 
     
-    @api.onchange('amount_total')
+    @api.onchange('invoice_line_ids')
+    def _onchange_update_diff(self):
+        _logger.info("26========== ONCHANGE diff")
+        self.write({
+           'approve_limit_diff': user_approve_limit.get_user_limit_diff(self) 
+        })
+        return
+
+    
     def check_approve_limit(self):
-        _logger.info("=====DEB30 Check Approve" )
+        #Se ejecuta ON_CREATE SOLAMENTE
         self.approve_limit_diff = user_approve_limit.get_user_limit_diff(self)
+        _logger.info("35======INV=== Check Approve %s", self.approve_limit_diff )
         return
 
     def request_approval(self):
